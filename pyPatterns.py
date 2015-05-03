@@ -12,7 +12,8 @@ This takes a deck of cards, shuffles it, and then goes through the deck one card
 whose ranks match. So, **King King**, right next to each other would be 1 pair. **Four Four Four**, would be a triple;
 and **Three Three Three Three** would be a quad. a triple does not count as two pairs AND a triple. each pattern only
 counts as its largest pattern, then all cards involved are skipped, which effects the count of no pairs (ie. you dont
-find a quad, then check the last card of the quad vs the next card in the deck, the last card of the quad is done.)
+find a quad, then check the last card of the quad vs the next card in the deck) then it outputs the number of decks
+that had 0 pairs, 1 pair, 2 pairs etc.
 '''
 
 def UncoverDeck(fooLIMITER):
