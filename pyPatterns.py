@@ -7,6 +7,14 @@ import itertools
 import datetime
 import sys
 
+'''
+This takes a deck of cards, shuffles it, and then goes through the deck one card at a time, looking for two cards
+whose ranks match. So, **King King**, right next to each other would be 1 pair. **Four Four Four**, would be a triple;
+and **Three Three Three Three** would be a quad. a triple does not count as two pairs AND a triple. each pattern only
+counts as its largest pattern, then all cards involved are skipped, which effects the count of no pairs (ie. you dont
+find a quad, then check the last card of the quad vs the next card in the deck, the last card of the quad is done.)
+'''
+
 def UncoverDeck(fooLIMITER):
     NewDeck = pl.Deck()
     NewDeck.makenew52carddesk()
@@ -43,14 +51,15 @@ def UncoverDeck(fooLIMITER):
                 if NewDeck.Cards[i].intRank == NewDeck.Cards[i+1].intRank == NewDeck.Cards[i+2].intRank == \
                         NewDeck.Cards[i+3].intRank:
                     quad += 1
-                    i = i + 2
+                    i += 3
                     continue
             if i < 50:
                 if NewDeck.Cards[i].intRank == NewDeck.Cards[i+1].intRank == NewDeck.Cards[i+2].intRank:
                     triple += 1
-                    i = i + 1
+                    i += 2
                     continue
             if NewDeck.Cards[i].intRank == NewDeck.Cards[i+1].intRank:
+                i += 1
                 pairs += 1
         pairresults.append(pairs)
         tripleresults.append(triple)
@@ -61,24 +70,28 @@ def UncoverDeck(fooLIMITER):
     SingleResultsTriple = [x for x, y in collections.Counter(tripleresults).items() if y >= 1]
     SingleResultsQuad = [x for x, y in collections.Counter(quadresults).items() if y >= 1]
 
-    print "---" + str(decks) + " Decks of Cards:"
     n = " Count"
     p = "Percent"
-    print "%sPatterns  %6s -  %7s     | Patterns    %6s - %8s     |  Patterns  %6s - %8s   %s" % \
+    print "%sPatterns  %6s -  %7s      | Patterns    %6s - %8s     |  Patterns  %6s - %8s    %s" % \
           (pl.color.UNDERLINE, n,p,n,p,n,p, pl.color.END)
+    UL = ULe = ""
     for s, t, q in itertools.izip_longest(SingleResultsPair, SingleResultsTriple, SingleResultsQuad): #, fillvalue=s):
         if t == None:
             t = s
         if q == None:
             q = s
+        if s == max(SingleResultsPair):
+            UL = pl.color.UNDERLINE
+            ULe = pl.color.END
 
-        print "%2s Pairs: %6s - %10f%%  | %2s Triples: %6s - %10f%%  |  %2s Quads: %6s - %10f%%" % \
-              (str(s), str(pairresults.count(s)), float(pairresults.count(s))/decks * 100,
+        print "%s|%2s Pairs: %6s - %10f%%  | %2s Triples: %6s - %10f%%  |  %2s Quads: %6s - %10f%%|%s" % \
+              (UL, str(s), str(pairresults.count(s)), float(pairresults.count(s))/decks * 100,
                str(t), str(tripleresults.count(t)), float(tripleresults.count(t))/decks * 100,
-               str(q), str(quadresults.count(q)), float(quadresults.count(q))/decks * 100)
+               str(q), str(quadresults.count(q)), float(quadresults.count(q))/decks * 100, ULe)
 
-    print datetime.datetime.now() - start
+    print "%s%s Decks of Cards in %s%s" % \
+                                (pl.color.YELLOW, (decks), str(datetime.datetime.now() - start), pl.color.END)
 
-fooLIMITER = 1 #seconds
+fooLIMITER = 35 #seconds
 
 UncoverDeck(fooLIMITER)
